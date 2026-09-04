@@ -1,23 +1,28 @@
-import { useEffect } from "react";
-import { connectToSignalingServer } from "./services/signaling";
-import { useMediaStream } from "./hooks/useMediaStream";
+import RoomControls from "./components/RoomControls";
 import VideoPlayer from "./components/VideoPlayer";
+import { useMediaStream } from "./hooks/useMediaStream";
+import { usePeerConnection } from "./hooks/usePeerConnection";
+import { useSignaling } from "./hooks/useSignaling";
 
 export default function App() {
   const localStream = useMediaStream();
+  const { createRoom, joinRoom } = useSignaling();
 
-  useEffect(() => {
-    const socket = connectToSignalingServer();
-
-    return () => {
-      socket.close();
-    }
-  }, []);
+  usePeerConnection(localStream);
 
   return (
-    <div> 
+    <div>
       <h1>VideoChat</h1>
-      <VideoPlayer stream={localStream} muted/>
+
+      <RoomControls
+        onCreateRoom={createRoom}
+        onJoinRoom={joinRoom}
+      />
+
+      <VideoPlayer
+        stream={localStream}
+        muted
+      />
     </div>
   );
 }

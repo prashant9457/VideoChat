@@ -1,5 +1,8 @@
-import { WebSocketServer, WebSocket } from "ws";
 import { Server } from "http";
+import { WebSocket, WebSocketServer } from "ws";
+
+import { handleMessage } from "./handlers/messageHandler.js";
+import { removeClient } from "./room.js";
 
 export function setupWebSocket(server: Server) {
   const wss = new WebSocketServer({ server });
@@ -7,28 +10,14 @@ export function setupWebSocket(server: Server) {
   wss.on("connection", (socket: WebSocket) => {
     console.log("WebSocket client connected");
 
-    socket.send(
-      JSON.stringify({
-        type: "connected",
-        message: "Connected to PeerCall signaling server",
-      }),
-    );
-
     socket.on("message", (data) => {
-      const message = JSON.parse(data.toString());
-
-      console.log("Received message:", message);
-
-      socket.send(
-        JSON.stringify({
-          type: "message",
-          message: "Server received your message",
-        }),
-      );
+      handleMessage(socket, data.toString());
     });
 
     socket.on("close", () => {
-      console.log("WebSocket client disconnected");
+      const roomId = removeClient(socket);
+
+      console.log("Client disconnected from room:", roomId);
     });
   });
 }

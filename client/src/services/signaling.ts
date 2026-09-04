@@ -1,25 +1,48 @@
-const SIGNALING_SERVER_URL = "ws://localhost:3000"
+const SIGNALING_SERVER_URL = "ws://localhost:3000";
 
 export function connectToSignalingServer() {
-    const socket = new WebSocket(SIGNALING_SERVER_URL);
+  const socket = new WebSocket(SIGNALING_SERVER_URL);
 
-    socket.onopen = () => {
-        console.log("connected to signaling server");
-    };
+  socket.onopen = () => {
+    console.log("Connected to signaling server");
+  };
 
-    socket.onmessage = (event) => {
-        const message = JSON.parse(event.data);
-        console.log("recieved from server : ", message);
-    };
+  socket.onmessage = (event) => {
+    const message = JSON.parse(event.data);
+    console.log("Received from server:", message);
+  };
 
-    socket.onclose = () => {
-        console.log("Disconnected from signaling server");
-    };
+  socket.onclose = () => {
+    console.log("Disconnected from signaling server");
+  };
 
-    socket.onerror = (error) => {
-     console.error("WebSocket error:", error);
-    };
+  socket.onerror = (error) => {
+    console.error("WebSocket error:", error);
+  };
 
-    return socket;
+  return socket;
+}
 
+export function createRoom(
+  socket: WebSocket,
+  roomId: string,
+) {
+  socket.send(
+    JSON.stringify({
+      type: "CREATE_ROOM",
+      roomId,
+    }),
+  );
+}
+
+export function joinRoom(
+  socket: WebSocket,
+  roomId: string,
+) {
+  socket.send(
+    JSON.stringify({
+      type: "JOIN_ROOM",
+      roomId,
+    }),
+  );
 }
