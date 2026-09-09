@@ -9,17 +9,11 @@ export function createPeerConnection(localStream: MediaStream) {
   });
 
   peerConnection.onconnectionstatechange = () => {
-    console.log(
-      "Connection state:",
-      peerConnection.connectionState,
-    );
+    console.log("Connection state:", peerConnection.connectionState);
   };
 
   peerConnection.oniceconnectionstatechange = () => {
-    console.log(
-      "ICE connection state:",
-      peerConnection.iceConnectionState,
-    );
+    console.log("ICE connection state:", peerConnection.iceConnectionState);
   };
 
   peerConnection.onicecandidate = (event) => {
@@ -33,7 +27,7 @@ export function createPeerConnection(localStream: MediaStream) {
   return peerConnection;
 }
 
-export async function createOffer( peerConnection: RTCPeerConnection ) {
+export async function createOffer(peerConnection: RTCPeerConnection) {
   console.log("Creating SDP offer...");
   const offer = await peerConnection.createOffer();
 
@@ -43,4 +37,17 @@ export async function createOffer( peerConnection: RTCPeerConnection ) {
   console.log("Local description set: ", peerConnection.localDescription);
 
   return offer;
+}
+
+export async function createAnswer(peerConnection: RTCPeerConnection) {
+  console.log("Creating SDP answer...");
+
+  const answer = await peerConnection.createAnswer();
+  console.log("Create answer: ", answer);
+
+  await peerConnection.setLocalDescription(answer);
+
+  console.log("Local description set: ", peerConnection.localDescription);
+
+  return answer;
 }

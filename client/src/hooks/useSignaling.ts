@@ -4,8 +4,8 @@ import {
   createRoom,
   joinRoom,
 } from "../services/signaling";
+import { createOffer, createAnswer } from "../services/webrtc";
 
-import { createOffer } from "../services/webrtc";
 export function useSignaling(
   peerConnectionRef: React.RefObject<RTCPeerConnection | null>,
 ) {
@@ -37,7 +37,22 @@ export function useSignaling(
       }
 
       if (message.type === "OFFER") {
-        console.log("Received OFFER from peer:", message.offer);
+        const peerConnection = peerConnectionRef.current;
+
+        if(!peerConnection) {
+          console.log("Peer connection not ready");
+          return;
+        }
+        console.log("Received OFFER from peer: ", message.offer);
+        
+        await peerConnection.setRemoteDescription(message.offer);
+        console.log("Remote description set");
+
+        const answer = await createAnswer(peerConnection);
+
+        socket.send(JSON.stringify({type: "ANSWER", answer}));
+        
+        console.log("ANSWER sent to server");
       }
     };
 
