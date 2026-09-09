@@ -54,6 +54,21 @@ export function useSignaling(
         
         console.log("ANSWER sent to server");
       }
+
+      if (message.type === "ANSWER") {
+        const peerConnection = peerConnectionRef.current;
+
+        if (!peerConnection) {
+          console.error("Peer connection not ready");
+          return;
+        }
+
+        console.log("Received ANSWER from peer:", message.answer);
+
+        await peerConnection.setRemoteDescription(message.answer);
+
+        console.log("Remote description set with ANSWER");
+      }
     };
 
     return () => {
