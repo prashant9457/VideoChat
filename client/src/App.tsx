@@ -3,13 +3,16 @@ import VideoPlayer from "./components/VideoPlayer";
 import { useMediaStream } from "./hooks/useMediaStream";
 import { usePeerConnection } from "./hooks/usePeerConnection";
 import { useSignaling } from "./hooks/useSignaling";
+import { useRef } from "react";
 
 export default function App() {
   const localStream = useMediaStream();
-  const peerConnectionRef = usePeerConnection(localStream);
-  const { createRoom, joinRoom } = useSignaling(peerConnectionRef);
 
-  usePeerConnection(localStream);
+  const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
+
+  const { createRoom, joinRoom, sendIceCandidate } = useSignaling(peerConnectionRef);
+
+  usePeerConnection( localStream, peerConnectionRef, sendIceCandidate);
 
   return (
     <div>

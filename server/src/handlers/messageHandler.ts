@@ -1,5 +1,9 @@
 import { WebSocket } from "ws";
-import { handleOffer, handleAnswer } from "./signalingHandler.js";
+import {
+  handleOffer,
+  handleAnswer,
+  handleIceCandidate,
+} from "./signalingHandler.js";
 import type { ClientMessage } from "../types/signaling.js";
 import { handleCreateRoom, handleJoinRoom } from "./roomHandler.js";
 import { sendMessage } from "../utils/sendMessage.js";
@@ -23,11 +27,11 @@ export function handleMessage(socket: WebSocket, rawMessage: string) {
       case "ANSWER":
         handleAnswer(socket, message);
         break;
+      case "ICE_CANDIDATE":
+        handleIceCandidate(socket, message);
+        break;
     }
   } catch {
-    sendMessage(socket, {
-      type: "ERROR",
-      message: "Invalid message",
-    });
+    sendMessage(socket, { type: "ERROR", message: "Invalid message"});
   }
 }

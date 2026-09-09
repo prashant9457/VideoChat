@@ -1,4 +1,7 @@
-export function createPeerConnection(localStream: MediaStream) {
+export function createPeerConnection(
+  localStream: MediaStream,
+  onIceCandidate: (candidate: RTCIceCandidate) => void,
+) {
   console.log("Creating RTCPeerConnection...");
 
   const peerConnection = new RTCPeerConnection();
@@ -17,7 +20,10 @@ export function createPeerConnection(localStream: MediaStream) {
   };
 
   peerConnection.onicecandidate = (event) => {
-    console.log("ICE candidate:", event.candidate);
+    if (event.candidate) {
+      console.log("ICE candidate:", event.candidate);
+      onIceCandidate(event.candidate);
+    }
   };
 
   peerConnection.ontrack = (event) => {

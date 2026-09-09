@@ -1,19 +1,26 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { createPeerConnection } from "../services/webrtc";
 
-export function usePeerConnection(localStream: MediaStream | null) {
-  const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
+type PeerConnectionRef = {
+  current: RTCPeerConnection | null;
+};
 
+export function usePeerConnection(
+  localStream: MediaStream | null,
+  peerConnectionRef: PeerConnectionRef,
+  onIceCandidate: (candidate: RTCIceCandidate) => void,
+) {
   useEffect(() => {
     if (!localStream) return;
 
-    peerConnectionRef.current = createPeerConnection(localStream);
+    peerConnectionRef.current = createPeerConnection(
+      localStream,
+      onIceCandidate,
+    );
 
     return () => {
       peerConnectionRef.current?.close();
       peerConnectionRef.current = null;
     };
-  }, [localStream]);
-
-  return peerConnectionRef;
-} 
+  }, [localStream, peerConnectionRef, onIceCandidate]);
+}

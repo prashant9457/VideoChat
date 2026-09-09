@@ -50,3 +50,25 @@ export function handleAnswer( socket: WebSocket, message: Extract<ClientMessage,
   }
 
 }
+
+export function handleIceCandidate(socket: WebSocket, message: Extract<ClientMessage, {type: "ICE_CANDIDATE"}>) {
+  const roomId = getClientRoom(socket);
+  if (!roomId) {
+    sendMessage(socket, { type: "ERROR", message: "You are not in a room"});
+    return;
+  }
+
+  const clients = getRoomClients(roomId);
+
+  if (!clients) {
+    sendMessage(socket, { type: "ERROR", message: "Room not found"});
+    return;
+  }
+
+  for (const client of clients) {
+    if (client !== socket) {
+      sendMessage(client, { type: "ICE_CANDIDATE", candidate: message.candidate });
+      return;
+    }
+  }
+}

@@ -69,6 +69,27 @@ export function useSignaling(
 
         console.log("Remote description set with ANSWER");
       }
+      
+      if (message.type === "ICE_CANDIDATE") {
+        const peerConnection = peerConnectionRef.current;
+
+        if (!peerConnection) {
+          console.error("Peer connection not ready");
+          return;
+        }
+
+        console.log(
+          "Received ICE candidate:",
+          message.candidate,
+        );
+
+        await peerConnection.addIceCandidate(
+          message.candidate,
+        );
+
+        console.log("ICE candidate added");
+      }
+
     };
 
     return () => {
@@ -89,8 +110,20 @@ export function useSignaling(
     joinRoom(socketRef.current, roomId);
   }
 
+  function sendIceCandidate(candidate: RTCIceCandidate) {
+    if (!socketRef.current) return;
+
+    socketRef.current.send(
+      JSON.stringify({
+        type: "ICE_CANDIDATE",
+        candidate: candidate.toJSON(),
+      }),
+    );
+  }
+
   return {
     createRoom: handleCreateRoom,
     joinRoom: handleJoinRoom,
+    sendIceCandidate
   };
 }
