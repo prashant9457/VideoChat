@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { createPeerConnection } from "../services/webrtc";
 
 type PeerConnectionRef = {
@@ -10,17 +10,29 @@ export function usePeerConnection(
   peerConnectionRef: PeerConnectionRef,
   onIceCandidate: (candidate: RTCIceCandidate) => void,
 ) {
+  const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
+
   useEffect(() => {
     if (!localStream) return;
 
-    peerConnectionRef.current = createPeerConnection(
-      localStream,
-      onIceCandidate,
-    );
+    const peerConnection = createPeerConnection(localStream, onIceCandidate);
+
+    peerConnectionRef.current = peerConnection;
+
+    peerConnection.ontrack = (event) => {
+      console.log("Remote track received:", event.streams[0]);
+
+      if (event.streams[0]) {
+        setRemoteStream(event.streams[0]);
+      }
+    };
 
     return () => {
-      peerConnectionRef.current?.close();
+      peerConnection.close();
       peerConnectionRef.current = null;
+      setRemoteStream(null);
     };
   }, [localStream, peerConnectionRef, onIceCandidate]);
+
+  return remoteStream;
 }

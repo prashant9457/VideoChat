@@ -12,7 +12,7 @@ export default function App() {
 
   const { createRoom, joinRoom, sendIceCandidate } = useSignaling(peerConnectionRef);
 
-  usePeerConnection( localStream, peerConnectionRef, sendIceCandidate);
+  const remoteStream = usePeerConnection( localStream, peerConnectionRef, sendIceCandidate);
 
   return (
     <div>
@@ -27,6 +27,10 @@ export default function App() {
         stream={localStream}
         muted
       />
-    </div>
+
+      <VideoPlayer
+        stream={remoteStream}
+      />
+  </div>
   );
 }

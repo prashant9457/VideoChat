@@ -26,10 +26,6 @@ export function createPeerConnection(
     }
   };
 
-  peerConnection.ontrack = (event) => {
-    console.log("Remote track received:", event.streams[0]);
-  };
-
   return peerConnection;
 }
 
