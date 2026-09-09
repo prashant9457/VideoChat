@@ -32,3 +32,15 @@ export function createPeerConnection(localStream: MediaStream) {
 
   return peerConnection;
 }
+
+export async function createOffer( peerConnection: RTCPeerConnection ) {
+  console.log("Creating SDP offer...");
+  const offer = await peerConnection.createOffer();
+
+  console.log("Created Offer: ", offer);
+  await peerConnection.setLocalDescription(offer);
+
+  console.log("Local description set: ", peerConnection.localDescription);
+
+  return offer;
+}

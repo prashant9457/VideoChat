@@ -5,6 +5,7 @@ type Room = {
 };
 
 const rooms = new Map<string, Room>();
+const clientRooms = new Map<WebSocket, string>();
 
 export function createRoom(roomId: string, socket: WebSocket) {
   if (rooms.has(roomId)) {
@@ -13,31 +14,48 @@ export function createRoom(roomId: string, socket: WebSocket) {
   rooms.set(roomId, {
     clients: new Set([socket]),
   });
+  clientRooms.set(socket, roomId);
   return true;
 }
 
 export function joinRoom(roomId: string, socket: WebSocket) {
   const room = rooms.get(roomId);
 
-  if (!room) return false;
+  if (!room) return null;
 
-  if (room.clients.size >= 2) return false;
+  if (room.clients.size >= 2) return null;
   room.clients.add(socket);
+  clientRooms.set(socket, roomId);
 
-  return true;
+  return room;
 }
 
 export function removeClient(socket: WebSocket) {
-  for (const [roomId, room] of rooms) {
-    if (room.clients.has(socket)) {
-      room.clients.delete(socket);
-      if (room.clients.size == 0) rooms.delete(roomId);
-    }
-    return roomId;
+  const roomId = clientRooms.get(socket);
+
+  if (!roomId) {
+    return null;
   }
-  return null;
+
+  const room = rooms.get(roomId);
+
+  if (room) {
+    room.clients.delete(socket);
+
+    if (room.clients.size === 0) {
+      rooms.delete(roomId);
+    }
+  }
+
+  clientRooms.delete(socket);
+
+  return roomId;
 }
 
 export function getRoomClients(roomId: string) {
   return rooms.get(roomId)?.clients;
+}
+
+export function getClientRoom(socket: WebSocket) {
+  return clientRooms.get(socket);
 }

@@ -6,7 +6,8 @@ import { useSignaling } from "./hooks/useSignaling";
 
 export default function App() {
   const localStream = useMediaStream();
-  const { createRoom, joinRoom } = useSignaling();
+  const peerConnectionRef = usePeerConnection(localStream);
+  const { createRoom, joinRoom } = useSignaling(peerConnectionRef);
 
   usePeerConnection(localStream);
 

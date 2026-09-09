@@ -1,5 +1,5 @@
 import { WebSocket } from "ws";
-
+import { handleOffer } from "./signalingHandler.js";
 import type { ClientMessage } from "../types/signaling.js";
 import { handleCreateRoom, handleJoinRoom } from "./roomHandler.js";
 import { sendMessage } from "../utils/sendMessage.js";
@@ -17,6 +17,9 @@ export function handleMessage(socket: WebSocket, rawMessage: string) {
 
       case "JOIN_ROOM":
         handleJoinRoom(socket, message);
+        break;
+      case "OFFER":
+        handleOffer(socket, message);
         break;
     }
   } catch {

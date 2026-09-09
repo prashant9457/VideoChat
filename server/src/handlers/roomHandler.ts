@@ -11,18 +11,11 @@ export function handleCreateRoom(
   const created = createRoom(message.roomId, socket);
 
   if (!created) {
-    sendMessage(socket, {
-      type: "ERROR",
-      message: "Room already exists",
-    });
-
+    sendMessage(socket, { type: "ERROR", message: "Room already exists"});
     return;
   }
 
-  sendMessage(socket, {
-    type: "ROOM_CREATED",
-    roomId: message.roomId,
-  });
+  sendMessage(socket, { type: "ROOM_CREATED", roomId: message.roomId });
 
   console.log(`Room created: ${message.roomId}`);
 }
@@ -31,21 +24,20 @@ export function handleJoinRoom(
   socket: WebSocket,
   message: Extract<ClientMessage, { type: "JOIN_ROOM" }>,
 ) {
-  const joined = joinRoom(message.roomId, socket);
+  const room = joinRoom(message.roomId, socket);
 
-  if (!joined) {
-    sendMessage(socket, {
-      type: "ERROR",
-      message: "Unable to join room",
-    });
-
+  if(!room) {
+    sendMessage(socket, {type: "ERROR", message: "Unable to join room"});
     return;
   }
 
-  sendMessage(socket, {
-    type: "ROOM_JOINED",
-    roomId: message.roomId,
-  });
+  sendMessage(socket, {type: "ROOM_JOINED", roomId: message.roomId});
+
+  for(const client of room.clients) {
+    if(client !== socket) {
+      sendMessage(client, {type: "PEER_JOINED"});
+    }
+  }
 
   console.log(`Client joined room: ${message.roomId}`);
 }
