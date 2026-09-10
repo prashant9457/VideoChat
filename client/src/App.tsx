@@ -16,8 +16,12 @@ export default function App() {
 
   const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
 
-  const { createRoom, joinRoom, sendIceCandidate } =
-    useSignaling(peerConnectionRef);
+  const {
+    createRoom,
+    joinRoom,
+    sendIceCandidate,
+    roomId,
+  } = useSignaling(peerConnectionRef);
 
   const remoteStream = usePeerConnection(
     localStream,
@@ -31,10 +35,16 @@ export default function App() {
 
       <BottomDock>
         <div className="room-controls-section">
-          <RoomControls onCreateRoom={createRoom} onJoinRoom={joinRoom} />
+          <RoomControls
+            roomId={roomId}
+            onCreateRoom={createRoom}
+            onJoinRoom={joinRoom}
+          />
         </div>
 
-        <div className="call-controls-section">{/* UI only for now */}</div>
+        <div className="call-controls-section">
+          {/* UI only for now */}
+        </div>
       </BottomDock>
 
       <VideoPlayer stream={localStream} muted />

@@ -1,34 +1,43 @@
 import { useState } from "react";
 
 interface RoomControlsProps {
+  roomId: string | null;
   onCreateRoom: () => void;
   onJoinRoom: (roomId: string) => void;
 }
 
 export default function RoomControls({
+  roomId,
   onCreateRoom,
   onJoinRoom,
 }: RoomControlsProps) {
-  const [roomId, setRoomId] = useState("");
+  const [inputRoomId, setInputRoomId] = useState("");
 
   function handleCreateRoom() {
     onCreateRoom();
   }
 
   function handleJoinRoom() {
-    if (!roomId.trim()) return;
+    if (!inputRoomId.trim()) return;
 
-    onJoinRoom(roomId.trim());
+    onJoinRoom(inputRoomId.trim());
   }
 
   return (
     <div>
+      {roomId && (
+        <div>
+          <span>Room: </span>
+          <strong>{roomId}</strong>
+        </div>
+      )}
+
       <input
         className="button"
         type="text"
         placeholder="Enter room code"
-        value={roomId}
-        onChange={(event) => setRoomId(event.target.value)}
+        value={inputRoomId}
+        onChange={(event) => setInputRoomId(event.target.value)}
       />
 
       <button className="button" onClick={handleCreateRoom}>
