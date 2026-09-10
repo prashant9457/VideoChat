@@ -4,12 +4,14 @@ interface RoomControlsProps {
   roomId: string | null;
   onCreateRoom: () => void;
   onJoinRoom: (roomId: string) => void;
+  errorMessage: string | null;
 }
 
 export default function RoomControls({
   roomId,
   onCreateRoom,
   onJoinRoom,
+  errorMessage,
 }: RoomControlsProps) {
   const [inputRoomId, setInputRoomId] = useState("");
 
@@ -29,6 +31,12 @@ export default function RoomControls({
         <div>
           <span>Room: </span>
           <strong>{roomId}</strong>
+        </div>
+      )}
+
+      {errorMessage && (
+        <div className="room-error" role="alert">
+          {errorMessage}
         </div>
       )}
 

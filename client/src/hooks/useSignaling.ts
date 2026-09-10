@@ -14,9 +14,17 @@ export function useSignaling(
 ) {
   const socketRef = useRef<WebSocket | null>(null);
   const [roomId, setRoomId] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [peerConnectionKey, setPeerConnectionKey] = useState(0);
 
   const pendingIceCandidates = useRef<RTCIceCandidateInit[]>([]);
+
+  const resetPeerConnection = useCallback(() => {
+    peerConnectionRef.current?.close();
+    peerConnectionRef.current = null;
+    pendingIceCandidates.current = [];
+    setPeerConnectionKey((key) => key + 1);
+  }, [peerConnectionRef]);
 
   useEffect(() => {
     const socket = connectToSignalingServer();
@@ -35,21 +43,24 @@ export function useSignaling(
 
       if (message.type === "ROOM_CREATED") {
         setRoomId(message.roomId);
+        setErrorMessage(null);
 
         console.log("Room created:", message.roomId);
       }
 
       if (message.type === "ROOM_JOINED") {
         setRoomId(message.roomId);
+        setErrorMessage(null);
 
         console.log("Joined room:", message.roomId);
       }
 
+      if (message.type === "ERROR") {
+        setErrorMessage(message.message);
+      }
+
       if (message.type === "PEER_LEFT") {
-        peerConnectionRef.current?.close();
-        peerConnectionRef.current = null;
-        pendingIceCandidates.current = [];
-        setPeerConnectionKey((key) => key + 1);
+        resetPeerConnection();
 
         console.log("Peer left the room");
       }
@@ -59,24 +70,29 @@ export function useSignaling(
       socket.close();
       socketRef.current = null;
     };
-  }, [peerConnectionRef]);
+  }, [peerConnectionRef, resetPeerConnection]);
 
   function handleCreateRoom() {
     if (!socketRef.current) return;
 
+    setErrorMessage(null);
     createRoom(socketRef.current);
   }
 
   function handleJoinRoom(roomId: string) {
     if (!socketRef.current) return;
 
+    setErrorMessage(null);
     joinRoom(socketRef.current, roomId);
   }
 
   function handleLeaveRoom() {
-    if (!socketRef.current) return;
+    if (socketRef.current) {
+      leaveRoom(socketRef.current);
+    }
 
-    leaveRoom(socketRef.current);
+    setErrorMessage(null);
+    resetPeerConnection();
     setRoomId(null);
   }
 
@@ -98,5 +114,6 @@ export function useSignaling(
     sendIceCandidate,
     roomId,
     peerConnectionKey,
+    errorMessage,
   };
 }

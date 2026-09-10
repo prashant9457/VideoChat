@@ -23,6 +23,7 @@ export default function App() {
     leaveRoom,
     roomId,
     peerConnectionKey,
+    errorMessage,
   } = useSignaling(peerConnectionRef);
 
   const remoteStream = usePeerConnection(
@@ -42,16 +43,14 @@ export default function App() {
             roomId={roomId}
             onCreateRoom={createRoom}
             onJoinRoom={joinRoom}
+            errorMessage={errorMessage}
           />
         </div>
 
         <div className="call-controls-section">
           {/* UI only for now */}
 
-          <button
-            className="button"
-            onClick={leaveRoom}
-          >
+          <button className="button" onClick={leaveRoom}>
             Leave Room
           </button>
         </div>
@@ -61,15 +60,8 @@ export default function App() {
 
       <VideoPlayer stream={remoteStream} />
 
-      <button
-        className="icon-button"
-        onClick={toggleMicrophone}
-      >
-        {isMicrophoneEnabled ? (
-          <Mic size={20} />
-        ) : (
-          <MicOff size={20} />
-        )}
+      <button className="icon-button" onClick={toggleMicrophone}>
+        {isMicrophoneEnabled ? <Mic size={20} /> : <MicOff size={20} />}
       </button>
     </div>
   );

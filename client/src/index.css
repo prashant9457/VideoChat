@@ -338,3 +338,9 @@ body {
 
   gap: 8px;
 }
+
+.room-error {
+  margin-bottom: 8px;
+  color: var(--danger);
+  font-size: 13px;
+}
