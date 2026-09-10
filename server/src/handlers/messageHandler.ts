@@ -32,6 +32,7 @@ export function handleMessage(socket: WebSocket, rawMessage: string) {
         break;
       case "LEAVE_ROOM":
         handleLeaveRoom(socket);
+        break;
     }
   } catch {
     sendMessage(socket, { type: "ERROR", message: "Invalid message"});

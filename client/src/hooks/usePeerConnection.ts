@@ -9,6 +9,7 @@ export function usePeerConnection(
   localStream: MediaStream | null,
   peerConnectionRef: PeerConnectionRef,
   onIceCandidate: (candidate: RTCIceCandidate) => void,
+  peerConnectionKey: number,
 ) {
   const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
 
@@ -32,7 +33,7 @@ export function usePeerConnection(
       peerConnectionRef.current = null;
       setRemoteStream(null);
     };
-  }, [localStream, peerConnectionRef, onIceCandidate]);
+  }, [localStream, peerConnectionRef, onIceCandidate, peerConnectionKey]);
 
   return remoteStream;
 }

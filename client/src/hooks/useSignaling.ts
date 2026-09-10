@@ -4,16 +4,17 @@ import {
   connectToSignalingServer,
   createRoom,
   joinRoom,
+  leaveRoom,
 } from "../services/signaling";
+
 import { handleSignalingMessage } from "../services/signalingHandlers";
-
-
 
 export function useSignaling(
   peerConnectionRef: React.RefObject<RTCPeerConnection | null>,
 ) {
   const socketRef = useRef<WebSocket | null>(null);
   const [roomId, setRoomId] = useState<string | null>(null);
+  const [peerConnectionKey, setPeerConnectionKey] = useState(0);
 
   const pendingIceCandidates = useRef<RTCIceCandidateInit[]>([]);
 
@@ -43,6 +44,15 @@ export function useSignaling(
 
         console.log("Joined room:", message.roomId);
       }
+
+      if (message.type === "PEER_LEFT") {
+        peerConnectionRef.current?.close();
+        peerConnectionRef.current = null;
+        pendingIceCandidates.current = [];
+        setPeerConnectionKey((key) => key + 1);
+
+        console.log("Peer left the room");
+      }
     };
 
     return () => {
@@ -63,6 +73,13 @@ export function useSignaling(
     joinRoom(socketRef.current, roomId);
   }
 
+  function handleLeaveRoom() {
+    if (!socketRef.current) return;
+
+    leaveRoom(socketRef.current);
+    setRoomId(null);
+  }
+
   const sendIceCandidate = useCallback((candidate: RTCIceCandidate) => {
     if (!socketRef.current) return;
 
@@ -77,7 +94,9 @@ export function useSignaling(
   return {
     createRoom: handleCreateRoom,
     joinRoom: handleJoinRoom,
+    leaveRoom: handleLeaveRoom,
     sendIceCandidate,
     roomId,
+    peerConnectionKey,
   };
 }

@@ -44,3 +44,11 @@ export function joinRoom(
     }),
   );
 }
+
+export function leaveRoom(socket: WebSocket) {
+  socket.send(
+    JSON.stringify({
+      type: "LEAVE_ROOM",
+    }),
+  );
+}
