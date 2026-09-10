@@ -1,36 +1,49 @@
+import { Mic, MicOff } from "lucide-react";
+import { useRef } from "react";
+import BottomDock from "./components/BottomDock";
 import RoomControls from "./components/RoomControls";
 import VideoPlayer from "./components/VideoPlayer";
 import { useMediaStream } from "./hooks/useMediaStream";
 import { usePeerConnection } from "./hooks/usePeerConnection";
 import { useSignaling } from "./hooks/useSignaling";
-import { useRef } from "react";
 
 export default function App() {
-  const localStream = useMediaStream();
+  const {
+    stream: localStream,
+    toggleMicrophone,
+    isMicrophoneEnabled,
+  } = useMediaStream();
 
   const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
 
-  const { createRoom, joinRoom, sendIceCandidate } = useSignaling(peerConnectionRef);
+  const { createRoom, joinRoom, sendIceCandidate } =
+    useSignaling(peerConnectionRef);
 
-  const remoteStream = usePeerConnection( localStream, peerConnectionRef, sendIceCandidate);
+  const remoteStream = usePeerConnection(
+    localStream,
+    peerConnectionRef,
+    sendIceCandidate,
+  );
 
   return (
     <div>
       <h1>VideoChat</h1>
 
-      <RoomControls
-        onCreateRoom={createRoom}
-        onJoinRoom={joinRoom}
-      />
+      <BottomDock>
+        <div className="room-controls-section">
+          <RoomControls onCreateRoom={createRoom} onJoinRoom={joinRoom} />
+        </div>
 
-      <VideoPlayer
-        stream={localStream}
-        muted
-      />
+        <div className="call-controls-section">{/* UI only for now */}</div>
+      </BottomDock>
 
-      <VideoPlayer
-        stream={remoteStream}
-      />
-  </div>
+      <VideoPlayer stream={localStream} muted />
+
+      <VideoPlayer stream={remoteStream} />
+
+      <button className="icon-button" onClick={toggleMicrophone}>
+        {isMicrophoneEnabled ? <Mic size={20} /> : <MicOff size={20} />}
+      </button>
+    </div>
   );
 }

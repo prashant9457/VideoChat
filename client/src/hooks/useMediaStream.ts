@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 export function useMediaStream () {
     const [stream, setStream] = useState<MediaStream | null>(null);
+    const [isMicrophoneEnabled, setIsMicrophoneEnabled] = useState(true);
 
     useEffect(()=> {
 
@@ -28,5 +29,17 @@ export function useMediaStream () {
         };
     }, []);
 
-    return stream;
+    function toggleMicrophone() {
+        if(!stream) return;
+
+        const audioTracks = stream.getAudioTracks();
+
+        audioTracks.forEach((track) => {
+            track.enabled = !track.enabled;
+            setIsMicrophoneEnabled(track.enabled);
+        }
+    );
+    }
+
+    return {stream, toggleMicrophone, isMicrophoneEnabled};
 }

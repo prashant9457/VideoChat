@@ -5,7 +5,7 @@ import {
   handleIceCandidate,
 } from "./signalingHandler.js";
 import type { ClientMessage } from "../types/signaling.js";
-import { handleCreateRoom, handleJoinRoom } from "./roomHandler.js";
+import { handleCreateRoom, handleJoinRoom, handleLeaveRoom } from "./roomHandler.js";
 import { sendMessage } from "../utils/sendMessage.js";
 
 export function handleMessage(socket: WebSocket, rawMessage: string) {
@@ -16,7 +16,7 @@ export function handleMessage(socket: WebSocket, rawMessage: string) {
 
     switch (message.type) {
       case "CREATE_ROOM":
-        handleCreateRoom(socket, message);
+        handleCreateRoom(socket);
         break;
       case "JOIN_ROOM":
         handleJoinRoom(socket, message);
@@ -30,6 +30,8 @@ export function handleMessage(socket: WebSocket, rawMessage: string) {
       case "ICE_CANDIDATE":
         handleIceCandidate(socket, message);
         break;
+      case "LEAVE_ROOM":
+        handleLeaveRoom(socket);
     }
   } catch {
     sendMessage(socket, { type: "ERROR", message: "Invalid message"});

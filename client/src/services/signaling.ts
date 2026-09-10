@@ -24,13 +24,11 @@ export function connectToSignalingServer() {
 }
 
 export function createRoom(
-  socket: WebSocket,
-  roomId: string,
+  socket: WebSocket
 ) {
   socket.send(
     JSON.stringify({
       type: "CREATE_ROOM",
-      roomId,
     }),
   );
 }

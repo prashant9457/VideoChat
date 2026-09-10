@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 interface RoomControlsProps {
-  onCreateRoom: (roomId: string) => void;
+  onCreateRoom: () => void;
   onJoinRoom: (roomId: string) => void;
 }
 
@@ -12,9 +12,7 @@ export default function RoomControls({
   const [roomId, setRoomId] = useState("");
 
   function handleCreateRoom() {
-    if (!roomId.trim()) return;
-
-    onCreateRoom(roomId.trim());
+    onCreateRoom();
   }
 
   function handleJoinRoom() {
@@ -26,17 +24,18 @@ export default function RoomControls({
   return (
     <div>
       <input
+        className="button"
         type="text"
         placeholder="Enter room code"
         value={roomId}
         onChange={(event) => setRoomId(event.target.value)}
       />
 
-      <button onClick={handleCreateRoom}>
+      <button className="button" onClick={handleCreateRoom}>
         Create Room
       </button>
 
-      <button onClick={handleJoinRoom}>
+      <button className="button" onClick={handleJoinRoom}>
         Join Room
       </button>
     </div>
