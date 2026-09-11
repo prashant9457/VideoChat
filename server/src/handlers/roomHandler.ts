@@ -45,6 +45,14 @@ export function handleJoinRoom(
   socket: WebSocket,
   message: Extract<ClientMessage, { type: "JOIN_ROOM" }>,
 ) {
+  if (getClientRoom(socket)) {
+    sendMessage(socket, {
+      type: "ERROR",
+      message: "You are already in a room",
+    });
+    return;
+  }
+
   const room = joinRoom(message.roomId, socket);
 
   if (!room) {
