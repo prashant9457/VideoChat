@@ -1,4 +1,5 @@
-const SIGNALING_SERVER_URL = "ws://localhost:3000";
+const SIGNALING_SERVER_URL =
+  import.meta.env.VITE_SIGNALING_SERVER_URL || "ws://localhost:3000";
 
 export function connectToSignalingServer() {
   const socket = new WebSocket(SIGNALING_SERVER_URL);
@@ -23,9 +24,7 @@ export function connectToSignalingServer() {
   return socket;
 }
 
-export function createRoom(
-  socket: WebSocket
-) {
+export function createRoom(socket: WebSocket) {
   socket.send(
     JSON.stringify({
       type: "CREATE_ROOM",
@@ -33,10 +32,7 @@ export function createRoom(
   );
 }
 
-export function joinRoom(
-  socket: WebSocket,
-  roomId: string,
-) {
+export function joinRoom(socket: WebSocket, roomId: string) {
   socket.send(
     JSON.stringify({
       type: "JOIN_ROOM",

@@ -3,7 +3,7 @@ import { setupWebSocket } from "./webSocket.js";
 
 const app = express();
 
-const PORT = 3000;
+const PORT = Number(process.env.PORT) || 3000;
 
 app.get("/", (_req, res) => {
   res.json({
@@ -11,8 +11,8 @@ app.get("/", (_req, res) => {
   });
 });
 
-const server = app.listen(PORT, () => {
-  console.log(`HTTP server running on http://localhost:${PORT}`);
+const server = app.listen(PORT, "0.0.0.0", () => {
+  console.log(`HTTP server running on port ${PORT}`);
 });
 
 setupWebSocket(server);
