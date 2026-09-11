@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "npm run dev:client",
+    "dev": "concurrently \"npm run dev:client\" \"npm run dev:server\"",
     "dev:client": "npm --prefix client run dev",
     "dev:server": "npm --prefix server run dev",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -14,5 +14,8 @@
   "description": "",
   "dependencies": {
     "lucide-react": "^1.44.0"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
   }
 }

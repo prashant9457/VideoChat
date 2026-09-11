@@ -1,16 +1,16 @@
 :root {
-  --bg: #080a12;
-  --text: rgba(255, 255, 255, 0.92);
-  --text-muted: rgba(255, 255, 255, 0.6);
-  --accent: #006b19;
-  --danger: #a30721;
-  --glass-bg: rgba(211, 204, 204, 0.08);
-  --glass-bg-strong: rgba(20, 24, 35, 0.62);
-  --glass-border: rgba(255, 255, 255, 0.14);
-  --glass-highlight: rgba(255, 255, 255, 0.08);
+  --bg: #17191c;
+  --text: rgba(248, 249, 250, 0.94);
+  --text-muted: rgba(214, 218, 222, 0.62);
+  --accent: #69747e;
+  --danger: #a94455;
+  --glass-bg: rgba(202, 208, 214, 0.08);
+  --glass-bg-strong: rgba(35, 39, 44, 0.86);
+  --glass-border: rgba(220, 226, 232, 0.16);
+  --glass-highlight: rgba(255, 255, 255, 0.1);
   --glass-blur: 24px;
-  --button-bg: rgba(255, 255, 255, 0.1);
-  --button-hover: rgba(255, 255, 255, 0.16);
+  --button-bg: rgba(213, 219, 224, 0.1);
+  --button-hover: rgba(223, 229, 234, 0.18);
   --radius-sm: 10px;
   --radius-md: 14px;
   --radius-lg: 22px;
@@ -87,7 +87,7 @@ body {
   min-height: 0;
   border-radius: var(--radius-lg);
   overflow: hidden;
-  background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.95));
+  background: linear-gradient(135deg, #24282d, #343a40);
   border: 1px solid var(--glass-border);
   box-shadow: var(--shadow-glass);
 }
@@ -97,7 +97,7 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(30, 41, 59, 0.9));
+  background: linear-gradient(135deg, #24282d, #30363c);
 }
 
 .remote-video {
@@ -114,7 +114,7 @@ body {
   flex-direction: column;
   gap: 10px;
   color: rgba(255, 255, 255, 0.8);
-  background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(30, 41, 59, 0.75));
+  background: linear-gradient(135deg, #24282d, #3a4148);
   text-align: center;
 }
 
@@ -134,12 +134,12 @@ body {
   border-radius: var(--radius-lg);
   overflow: hidden;
   border: 1px solid var(--glass-border);
-  background: rgba(15, 23, 42, 0.9);
+  background: rgba(38, 43, 48, 0.96);
   box-shadow: var(--shadow-glass);
 }
 
 .local-video-wrap.camera-off {
-  background: rgba(15, 23, 42, 0.7);
+  background: rgba(38, 43, 48, 0.82);
 }
 
 .local-video {
