@@ -1,74 +1,31 @@
 :root {
-  /* ---------- Colors ---------- */
-
   --bg: #080a12;
-
   --text: rgba(255, 255, 255, 0.92);
   --text-muted: rgba(255, 255, 255, 0.6);
-
-  --accent: #6366f1;
-  --danger: #f43f5e;
-
-  /* ---------- Glass ---------- */
-
-  --glass-bg: rgba(255, 255, 255, 0.08);
+  --accent: #006b19;
+  --danger: #a30721;
+  --glass-bg: rgba(211, 204, 204, 0.08);
   --glass-bg-strong: rgba(20, 24, 35, 0.62);
-
   --glass-border: rgba(255, 255, 255, 0.14);
   --glass-highlight: rgba(255, 255, 255, 0.08);
-
   --glass-blur: 24px;
-
-  /* ---------- Buttons ---------- */
-
   --button-bg: rgba(255, 255, 255, 0.1);
   --button-hover: rgba(255, 255, 255, 0.16);
-
-  /* ---------- Radius ---------- */
-
   --radius-sm: 10px;
   --radius-md: 14px;
   --radius-lg: 22px;
-
-  /* ---------- Shadows ---------- */
-
-  --shadow-glass:
-    0 20px 50px rgba(0, 0, 0, 0.35),
-    inset 0 1px 0 var(--glass-highlight);
-
-  /* ---------- Typography ---------- */
-
-  --sans:
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    Roboto,
-    sans-serif;
-
-  --mono:
-    ui-monospace,
-    SFMono-Regular,
-    Consolas,
-    monospace;
-
+  --shadow-glass: 0 20px 50px rgba(0, 0, 0, 0.35), inset 0 1px 0 var(--glass-highlight);
+  --sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   font-family: var(--sans);
   font-size: 16px;
   line-height: 1.5;
-
   color: var(--text);
   background: var(--bg);
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-
-
-/* =========================================================
-   Global Reset
-   ========================================================= */
 
 * {
   box-sizing: border-box;
@@ -78,64 +35,144 @@ html,
 body,
 #root {
   width: 100%;
-  min-height: 100%;
+  height: 100%;
 }
 
 body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
-}
-
-
-/* =========================================================
-   Application Shell
-   ========================================================= */
-
-#root {
-  min-height: 100svh;
-  position: relative;
   overflow: hidden;
 }
 
+#root {
+  height: 100vh;
+  position: relative;
+}
 
-/* =========================================================
-   Reusable Glass Surface
-   ========================================================= */
+.app-shell {
+  height: 100vh;
+  padding: 24px 24px 120px;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.app-header {
+  width: min(1200px, 100%);
+  margin: 0 auto 20px;
+}
+
+.app-header h1 {
+  margin: 0;
+  font-size: clamp(2rem, 3vw, 3rem);
+  letter-spacing: -0.04em;
+}
+
+.video-stage {
+  flex: 1;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  min-height: 0;
+  max-height: 100%;
+  padding: 8px 0 24px;
+}
+
+.video-scene {
+  position: relative;
+  width: min(1200px, 100%);
+  height: 100%;
+  min-height: 0;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.95));
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-glass);
+}
+
+.video-card {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(30, 41, 59, 0.9));
+}
+
+.remote-video {
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+}
+
+.remote-video-placeholder,
+.video-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 10px;
+  color: rgba(255, 255, 255, 0.8);
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(30, 41, 59, 0.75));
+  text-align: center;
+}
+
+.remote-video-placeholder {
+  width: 100%;
+  height: 100%;
+  font-size: clamp(1rem, 1.6vw, 1.4rem);
+  letter-spacing: 0.04em;
+}
+
+.local-video-wrap {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  width: min(260px, 30vw);
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--glass-border);
+  background: rgba(15, 23, 42, 0.9);
+  box-shadow: var(--shadow-glass);
+}
+
+.local-video-wrap.camera-off {
+  background: rgba(15, 23, 42, 0.7);
+}
+
+.local-video {
+  transform: scaleX(-1);
+  border-radius: var(--radius-lg);
+}
+
+.video-placeholder {
+  width: 100%;
+  height: 100%;
+  padding: 16px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
 
 .glass {
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
-
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
-
   box-shadow: var(--shadow-glass);
 }
-
-
-/* =========================================================
-   Buttons
-   ========================================================= */
 
 .button {
   border: 1px solid transparent;
   border-radius: var(--radius-md);
-
   padding: 11px 18px;
-
   color: var(--text);
   background: var(--button-bg);
-
   font: inherit;
   font-weight: 500;
-
   cursor: pointer;
-
-  transition:
-    background 0.2s ease,
-    transform 0.15s ease,
-    border-color 0.2s ease;
+  transition: background 0.2s ease, transform 0.15s ease, border-color 0.2s ease;
 }
 
 .button:hover {
@@ -146,15 +183,12 @@ body {
   transform: scale(0.96);
 }
 
-
-/* ---------- Button Variants ---------- */
-
 .button-primary {
   background: var(--accent);
 }
 
 .button-primary:hover {
-  background: #7072f5;
+  background: #02722d;
 }
 
 .button-danger {
@@ -165,33 +199,19 @@ body {
   background: #fb5470;
 }
 
-
-/* =========================================================
-   Icon Buttons
-   ========================================================= */
-
 .icon-button {
   width: 56px;
   height: 56px;
-
   display: inline-flex;
   align-items: center;
   justify-content: center;
-
   padding: 0;
-
   border: 1px solid var(--glass-border);
   border-radius: 50%;
-
   color: var(--text);
   background: var(--button-bg);
-
   cursor: pointer;
-
-  transition:
-    background 0.2s ease,
-    transform 0.15s ease,
-    border-color 0.2s ease;
+  transition: background 0.2s ease, transform 0.15s ease, border-color 0.2s ease;
 }
 
 .icon-button:hover {
@@ -202,9 +222,6 @@ body {
   transform: scale(0.94);
 }
 
-
-/* ---------- Icon Button Variants ---------- */
-
 .icon-button-danger {
   background: var(--danger);
   border-color: rgba(255, 255, 255, 0.18);
@@ -214,114 +231,84 @@ body {
   background: #fb5470;
 }
 
-
-/* =========================================================
-   Bottom Dock
-   ========================================================= */
-
 .bottom-dock {
   position: fixed;
-
   left: 50%;
   bottom: 24px;
-
   transform: translateX(-50%);
-
   width: min(1200px, calc(100% - 48px));
   min-height: 110px;
-
   display: flex;
   align-items: center;
   justify-content: space-between;
-
+  gap: 20px;
   padding: 16px 24px;
-
   border-radius: var(--radius-lg);
-
   background: var(--glass-bg-strong);
   border: 1px solid var(--glass-border);
-
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
-
   box-shadow: var(--shadow-glass);
-
   z-index: 100;
 }
-
-
-/* =========================================================
-   Dock Sections
-   ========================================================= */
 
 .room-controls-section {
   display: flex;
   align-items: center;
+  min-width: 0;
+  flex: 1 1 auto;
 }
 
 .call-controls-section {
   display: flex;
   align-items: center;
   gap: 12px;
-}
-
-
-/* =========================================================
-   Responsive
-   ========================================================= */
-
-@media (max-width: 768px) {
-  .bottom-dock {
-    width: calc(100% - 24px);
-    bottom: 12px;
-
-    padding: 12px 16px;
-
-    border-radius: 18px;
-  }
-
-  .icon-button {
-    width: 48px;
-    height: 48px;
-  }
+  margin-left: auto;
 }
 
 .room-controls {
   display: flex;
   align-items: center;
   gap: 10px;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.room-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--glass-border);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.room-label {
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 
 .room-input-wrapper {
   display: flex;
   align-items: center;
   gap: 10px;
-
   height: 46px;
-
   padding: 0 14px;
-
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-md);
-
   background: rgba(255, 255, 255, 0.06);
 }
 
-.room-label {
-  color: var(--text-muted);
-  font-size: 13px;
-  font-weight: 500;
-}
-
 .room-input-wrapper input {
-  width: 150px;
-
+  width: 160px;
   border: none;
   outline: none;
-
   color: var(--text);
   background: transparent;
-
   font: inherit;
 }
 
@@ -331,23 +318,168 @@ body {
 
 .room-controls .button {
   height: 46px;
-
   display: inline-flex;
   align-items: center;
   justify-content: center;
-
   gap: 8px;
 }
 
 .room-error {
-  margin-bottom: 8px;
+  width: 100%;
+  margin-top: 4px;
   color: var(--danger);
   font-size: 13px;
 }
 
-.media-error {
-  margin: 16px 24px;
-  color: var(--danger);
+.floating-error-window {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(620px, calc(100% - 32px));
+  z-index: 200;
+  padding: 16px 18px;
+  border-radius: var(--radius-lg);
+  background: rgba(163, 7, 33, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.38);
+  color: #fff;
+  opacity: 0;
+  pointer-events: none;
+  animation: fade-error 4s ease forwards;
+}
+
+@keyframes fade-error {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -8px);
+  }
+
+  10% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+
+  80% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -8px);
+    visibility: hidden;
+  }
+}
+
+.floating-error-title {
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.9;
+}
+
+.floating-error-list {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 6px;
   font-size: 14px;
-  text-align: center;
+  line-height: 1.5;
+}
+
+@media (max-width: 900px) {
+  .video-scene {
+    width: 100%;
+  }
+
+  .local-video-wrap {
+    width: min(200px, 38vw);
+    right: 12px;
+    bottom: 12px;
+  }
+
+  .bottom-dock {
+    width: calc(100% - 24px);
+    bottom: 12px;
+    padding: 12px 16px;
+    border-radius: 18px;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .room-controls-section,
+  .call-controls-section {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .room-controls {
+    justify-content: center;
+  }
+
+  .call-controls-section {
+    margin-left: 0;
+  }
+}
+
+@media (max-height: 720px) {
+  .app-shell {
+    padding-top: 16px;
+    padding-bottom: 138px;
+  }
+
+  .app-header {
+    margin-bottom: 12px;
+  }
+
+  .video-stage {
+    padding: 4px 0 12px;
+  }
+
+  .bottom-dock {
+    min-height: 96px;
+    padding: 12px 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .app-shell {
+    padding: 20px 16px 150px;
+  }
+
+  .icon-button {
+    width: 48px;
+    height: 48px;
+  }
+
+  .room-input-wrapper input {
+    width: 120px;
+  }
+}
+
+@media (max-width: 520px) {
+  .room-controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .room-pill,
+  .room-input-wrapper {
+    grid-column: 1 / -1;
+  }
+
+  .room-input-wrapper {
+    width: 100%;
+  }
+
+  .room-input-wrapper input {
+    width: 100%;
+  }
+
+  .room-controls .button {
+    width: 100%;
+  }
 }

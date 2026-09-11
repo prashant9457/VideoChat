@@ -4,6 +4,7 @@ export function useMediaStream() {
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [mediaError, setMediaError] = useState<string | null>(null);
   const [isMicrophoneEnabled, setIsMicrophoneEnabled] = useState(true);
+  const [isCameraEnabled, setIsCameraEnabled] = useState(true);
 
   useEffect(() => {
     let mediaStream: MediaStream;
@@ -53,5 +54,23 @@ export function useMediaStream() {
     });
   }
 
-  return { stream, toggleMicrophone, isMicrophoneEnabled, mediaError };
+  function toggleCamera() {
+    if (!stream) return;
+
+    const videoTracks = stream.getVideoTracks();
+
+    videoTracks.forEach((track) => {
+      track.enabled = !track.enabled;
+      setIsCameraEnabled(track.enabled);
+    });
+  }
+
+  return {
+    stream,
+    toggleMicrophone,
+    toggleCamera,
+    isMicrophoneEnabled,
+    isCameraEnabled,
+    mediaError,
+  };
 }

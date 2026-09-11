@@ -1,23 +1,18 @@
+import { DoorOpen, LogIn } from "lucide-react";
 import { useState } from "react";
 
 interface RoomControlsProps {
   roomId: string | null;
   onCreateRoom: () => void;
   onJoinRoom: (roomId: string) => void;
-  errorMessage: string | null;
 }
 
 export default function RoomControls({
   roomId,
   onCreateRoom,
   onJoinRoom,
-  errorMessage,
 }: RoomControlsProps) {
   const [inputRoomId, setInputRoomId] = useState("");
-
-  function handleCreateRoom() {
-    onCreateRoom();
-  }
 
   function handleJoinRoom() {
     if (!inputRoomId.trim()) return;
@@ -26,33 +21,30 @@ export default function RoomControls({
   }
 
   return (
-    <div>
+    <div className="room-controls">
       {roomId && (
-        <div>
-          <span>Room: </span>
+        <div className="room-pill">
+          <span className="room-label">Room</span>
           <strong>{roomId}</strong>
         </div>
       )}
 
-      {errorMessage && (
-        <div className="room-error" role="alert">
-          {errorMessage}
-        </div>
-      )}
+      <div className="room-input-wrapper">
+        <input
+          type="text"
+          placeholder="Enter room code"
+          value={inputRoomId}
+          onChange={(event) => setInputRoomId(event.target.value)}
+        />
+      </div>
 
-      <input
-        className="button"
-        type="text"
-        placeholder="Enter room code"
-        value={inputRoomId}
-        onChange={(event) => setInputRoomId(event.target.value)}
-      />
-
-      <button className="button" onClick={handleCreateRoom}>
+      <button className="button" onClick={onCreateRoom}>
+        <DoorOpen size={18} />
         Create Room
       </button>
 
-      <button className="button" onClick={handleJoinRoom}>
+      <button className="button button-primary" onClick={handleJoinRoom}>
+        <LogIn size={18} />
         Join Room
       </button>
     </div>
