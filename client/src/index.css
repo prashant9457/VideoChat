@@ -344,3 +344,10 @@ body {
   color: var(--danger);
   font-size: 13px;
 }
+
+.media-error {
+  margin: 16px 24px;
+  color: var(--danger);
+  font-size: 14px;
+  text-align: center;
+}

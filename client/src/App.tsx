@@ -12,6 +12,7 @@ export default function App() {
     stream: localStream,
     toggleMicrophone,
     isMicrophoneEnabled,
+    mediaError,
   } = useMediaStream();
 
   const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
@@ -37,6 +38,12 @@ export default function App() {
     <div>
       <h1>VideoChat</h1>
 
+      {mediaError && (
+        <div className="media-error" role="alert">
+          {mediaError}
+        </div>
+      )}
+
       <BottomDock>
         <div className="room-controls-section">
           <RoomControls
@@ -45,6 +52,9 @@ export default function App() {
             onJoinRoom={joinRoom}
             errorMessage={errorMessage}
           />
+          <button className="icon-button" onClick={toggleMicrophone}>
+            {isMicrophoneEnabled ? <Mic size={20} /> : <MicOff size={20} />}
+          </button>
         </div>
 
         <div className="call-controls-section">
@@ -59,10 +69,6 @@ export default function App() {
       <VideoPlayer stream={localStream} muted />
 
       <VideoPlayer stream={remoteStream} />
-
-      <button className="icon-button" onClick={toggleMicrophone}>
-        {isMicrophoneEnabled ? <Mic size={20} /> : <MicOff size={20} />}
-      </button>
     </div>
   );
 }
