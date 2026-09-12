@@ -1,6 +1,8 @@
-import { Mic, MicOff, PhoneOff, Video, VideoOff } from "lucide-react";
+import { PhoneOff, VideoOff } from "lucide-react";
 import { useRef } from "react";
+import { useParams } from "react-router-dom";
 import BottomDock from "./components/BottomDock";
+import MediaControls from "./components/MediaControls";
 import RoomControls from "./components/RoomControls";
 import VideoPlayer from "./components/VideoPlayer";
 import { useMediaStream } from "./hooks/useMediaStream";
@@ -8,6 +10,7 @@ import { usePeerConnection } from "./hooks/usePeerConnection";
 import { useSignaling } from "./hooks/useSignaling";
 
 export default function App() {
+  const { meetingId } = useParams<{ meetingId: string }>();
   const {
     stream: localStream,
     toggleMicrophone,
@@ -27,7 +30,7 @@ export default function App() {
     roomId,
     peerConnectionKey,
     errorMessage,
-  } = useSignaling(peerConnectionRef);
+  } = useSignaling(peerConnectionRef, meetingId);
 
   const remoteStream = usePeerConnection(
     localStream,
@@ -38,7 +41,7 @@ export default function App() {
 
   const alertMessages = [mediaError, errorMessage].filter(
     (message): message is string => Boolean(message),
-  );
+  );  
 
   return (
     <div className="app-shell">
@@ -107,27 +110,12 @@ export default function App() {
         </div>
 
         <div className="call-controls-section">
-          <button
-            className="icon-button"
-            onClick={toggleCamera}
-            aria-label={isCameraEnabled ? "Turn camera off" : "Turn camera on"}
-            title={isCameraEnabled ? "Turn camera off" : "Turn camera on"}
-          >
-            {isCameraEnabled ? <Video size={20} /> : <VideoOff size={20} />}
-          </button>
-
-          <button
-            className="icon-button"
-            onClick={toggleMicrophone}
-            aria-label={
-              isMicrophoneEnabled ? "Mute microphone" : "Unmute microphone"
-            }
-            title={
-              isMicrophoneEnabled ? "Mute microphone" : "Unmute microphone"
-            }
-          >
-            {isMicrophoneEnabled ? <Mic size={20} /> : <MicOff size={20} />}
-          </button>
+          <MediaControls
+            isCameraEnabled={isCameraEnabled}
+            isMicrophoneEnabled={isMicrophoneEnabled}
+            onToggleCamera={toggleCamera}
+            onToggleMicrophone={toggleMicrophone}
+          />
 
           <button
             className="icon-button icon-button-danger"

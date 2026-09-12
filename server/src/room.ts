@@ -6,15 +6,39 @@ type Room = {
 
 const rooms = new Map<string, Room>();
 const clientRooms = new Map<WebSocket, string>();
+const emptyRoomTimers = new Map<string, NodeJS.Timeout>();
+const EMPTY_ROOM_TTL_MS = 5 * 60 * 1000;
 
-export function createRoom(roomId: string, socket: WebSocket) {
+function clearEmptyRoomTimer(roomId: string) {
+  const timer = emptyRoomTimers.get(roomId);
+  if (timer) {
+    clearTimeout(timer);
+    emptyRoomTimers.delete(roomId);
+  }
+}
+
+function scheduleEmptyRoomRemoval(roomId: string) {
+  clearEmptyRoomTimer(roomId);
+  const timer = setTimeout(() => {
+    const room = rooms.get(roomId);
+    if (room?.clients.size === 0) {
+      rooms.delete(roomId);
+    }
+    emptyRoomTimers.delete(roomId);
+  }, EMPTY_ROOM_TTL_MS);
+  emptyRoomTimers.set(roomId, timer);
+}
+
+export function createRoom(roomId: string, socket?: WebSocket) {
   if (rooms.has(roomId)) {
     return false;
   }
   rooms.set(roomId, {
-    clients: new Set([socket]),
+    clients: new Set(socket ? [socket] : []),
   });
-  clientRooms.set(socket, roomId);
+  if (socket) {
+    clientRooms.set(socket, roomId);
+  }
   return true;
 }
 
@@ -24,6 +48,7 @@ export function joinRoom(roomId: string, socket: WebSocket) {
   if (!room) return null;
 
   if (room.clients.size >= 2) return null;
+  clearEmptyRoomTimer(roomId);
   room.clients.add(socket);
   clientRooms.set(socket, roomId);
 
@@ -43,7 +68,7 @@ export function removeClient(socket: WebSocket) {
     room.clients.delete(socket);
 
     if (room.clients.size === 0) {
-      rooms.delete(roomId);
+      scheduleEmptyRoomRemoval(roomId);
     }
   }
 

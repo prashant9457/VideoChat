@@ -11,6 +11,7 @@ import { handleSignalingMessage } from "../services/signalingHandlers";
 
 export function useSignaling(
   peerConnectionRef: React.RefObject<RTCPeerConnection | null>,
+  initialRoomId?: string,
 ) {
   const socketRef = useRef<WebSocket | null>(null);
   const [roomId, setRoomId] = useState<string | null>(null);
@@ -30,6 +31,12 @@ export function useSignaling(
     const socket = connectToSignalingServer();
 
     socketRef.current = socket;
+
+    socket.onopen = () => {
+      if (initialRoomId) {
+        joinRoom(socket, initialRoomId);
+      }
+    };
 
     socket.onmessage = async (event) => {
       const message = JSON.parse(event.data);
@@ -70,7 +77,7 @@ export function useSignaling(
       socket.close();
       socketRef.current = null;
     };
-  }, [peerConnectionRef, resetPeerConnection]);
+  }, [initialRoomId, peerConnectionRef, resetPeerConnection]);
 
   function handleCreateRoom() {
     if (!socketRef.current) return;

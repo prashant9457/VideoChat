@@ -48,3 +48,35 @@ export function leaveRoom(socket: WebSocket) {
     }),
   );
 }
+
+export function requestNewRoom(): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const socket = connectToSignalingServer();
+
+    socket.onopen = () => {
+      createRoom(socket);
+    };
+
+    socket.onmessage = (event) => {
+      const message = JSON.parse(event.data) as {
+        type: string;
+        roomId?: string;
+        message?: string;
+      };
+
+      if (message.type === "ROOM_CREATED" && message.roomId) {
+        socket.close();
+        resolve(message.roomId);
+      }
+
+      if (message.type === "ERROR") {
+        socket.close();
+        reject(new Error(message.message || "Unable to create a meeting."));
+      }
+    };
+
+    socket.onerror = () => {
+      reject(new Error("Unable to reach the signaling server."));
+    };
+  });
+}
